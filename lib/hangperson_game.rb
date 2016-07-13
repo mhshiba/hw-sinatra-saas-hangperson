@@ -8,8 +8,15 @@ class HangpersonGame
   # def initialize()
   # end
   
+  attr_accessor :word
+  attr_accessor :guesses
+  attr_accessor :wrong_guesses
+  
   def initialize(word)
     @word = word
+    @guesses = ''
+    @wrong_guesses = ''
+    @guess_number = 0
   end
 
   def self.get_random_word
@@ -17,6 +24,51 @@ class HangpersonGame
     require 'net/http'
     uri = URI('http://watchout4snakes.com/wo4snakes/Random/RandomWord')
     Net::HTTP.post_form(uri ,{}).body
+  end
+  
+  def guess(letter)
+    raise ArgumentError, "Guessed letter can't be nil" if letter == nil
+    raise ArgumentError, "Guessed letter can't be empty" if letter.empty?
+    raise ArgumentError, "Guessed letter must be a letter" unless letter.match(/[a-z]/i)
+    
+    letter_low = letter.downcase
+    # A letter that has already been guessed
+    # or is a non-alphabet character is considered "invalid"
+    if @guesses.include? letter_low or @wrong_guesses.include? letter_low or
+      letter_low.match(/[^a-z]/i)
+      valid = false
+    else
+      if @word.downcase.include? letter_low
+        @guesses += letter_low
+      else
+        @wrong_guesses += letter_low
+      end
+      valid = true
+      @guess_number += 1
+    end
+    valid
+  end
+  
+  def word_with_guesses
+    retval = ''
+    @word.chars do |s|
+      if @guesses.include? s
+        retval += s
+      else
+        retval += '-'
+      end
+    end
+    retval
+  end
+  
+  def check_win_or_lose
+    check = :play
+    if @guess_number >= 7
+      check = :lose
+    elsif not word_with_guesses.include? '-' and @guess_number < 7
+      check = :win
+    end
+    check
   end
 
 end

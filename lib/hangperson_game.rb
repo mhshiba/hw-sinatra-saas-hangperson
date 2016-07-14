@@ -12,6 +12,7 @@ class HangpersonGame
   attr_accessor :guesses
   attr_accessor :wrong_guesses
   
+  
   def initialize(word)
     @word = word
     @guesses = ''
@@ -65,7 +66,7 @@ class HangpersonGame
     check = :play
     if @guess_number >= 7
       check = :lose
-    elsif not word_with_guesses.include? '-' and @guess_number < 7
+    elsif word_with_guesses == @word and @guess_number < 7
       check = :win
     end
     check

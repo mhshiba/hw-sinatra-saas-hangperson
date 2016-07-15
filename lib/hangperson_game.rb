@@ -12,14 +12,12 @@ class HangpersonGame
   attr_accessor :guesses
   attr_accessor :wrong_guesses
   
-  attr_reader :word_with_guesses
   
   def initialize(word)
-    @word = word.downcase
+    @word = word
     @guesses = ''
     @wrong_guesses = ''
     @guess_number = 0
-    @word_with_guesses = '-' * @word.length
   end
 
   def self.get_random_word
@@ -41,15 +39,8 @@ class HangpersonGame
       letter_low.match(/[^a-z]/i)
       valid = false
     else
-      # If the word contains this letter
       if @word.downcase.include? letter_low
         @guesses += letter_low
-        # Update word with guesses until now
-        # Replacing it with current letter
-        i = -1
-        while i = @word.index(letter_low, i + 1) do
-          @word_with_guesses[i] = letter_low
-        end
       else
         @wrong_guesses += letter_low
       end
@@ -59,11 +50,23 @@ class HangpersonGame
     valid
   end
   
+  def word_with_guesses
+    retval = ''
+    @word.chars do |s|
+      if @guesses.include? s
+        retval += s
+      else
+        retval += '-'
+      end
+    end
+    retval
+  end
+  
   def check_win_or_lose
     check = :play
     if @guess_number >= 7
       check = :lose
-    elsif @word_with_guesses == @word and @guess_number < 7
+    elsif word_with_guesses == @word and @guess_number < 7
       check = :win
     end
     check

@@ -40,15 +40,20 @@ class HangpersonApp < Sinatra::Base
   post '/guess' do
     letter = params[:guess].to_s[0]
     ### YOUR CODE HERE ###
-    if not @game.guess letter
-      flash[:message] = 'You have already used that letter'
-    end
-    
-    game_status = @game.check_win_or_lose
-    if game_status == :win
-      redirect '/win'
-    elsif game_status == :lose
-      redirect '/lose'
+    begin
+      if not @game.guess letter
+        flash[:message] = 'You have already used that letter.'
+      end
+      
+      game_status = @game.check_win_or_lose
+      if game_status == :win
+        redirect '/win'
+      elsif game_status == :lose
+        redirect '/lose'
+      end
+
+    rescue Exception
+      flash[:message] = "Invalid letter."
     end
     
     redirect '/show'
@@ -71,7 +76,7 @@ class HangpersonApp < Sinatra::Base
   get '/win' do
     ### YOUR CODE HERE ###
     if not @game.check_win_or_lose == :win
-      redirect '/new'
+      redirect '/show'
     end
     
     erb :win # You may change/remove this line
@@ -80,7 +85,7 @@ class HangpersonApp < Sinatra::Base
   get '/lose' do
     ### YOUR CODE HERE ###
     if not @game.check_win_or_lose == :lose
-      redirect '/new'
+      redirect '/show'
     end
     
     erb :lose # You may change/remove this line

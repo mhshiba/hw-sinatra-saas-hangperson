@@ -33,4 +33,4 @@ Scenario: guess invalid letter
   
   Given I start a new game with word "computer"
   Then I guess "%"
-  Then I should see "Invalid letter."
+  Then I should see "Invalid guess."

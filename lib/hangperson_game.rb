@@ -17,7 +17,6 @@ class HangpersonGame
     @word = word
     @guesses = ''
     @wrong_guesses = ''
-    @guess_number = 0
   end
 
   def self.get_random_word
@@ -45,7 +44,6 @@ class HangpersonGame
         @wrong_guesses += letter_low
       end
       valid = true
-      @guess_number += 1
     end
     valid
   end
@@ -64,10 +62,10 @@ class HangpersonGame
   
   def check_win_or_lose
     check = :play
-    if @guess_number >= 7
-      check = :lose
-    elsif word_with_guesses == @word and @guess_number < 7
+    if word_with_guesses == @word and @wrong_guesses.length < 7
       check = :win
+    elsif @wrong_guesses.length >= 7
+      check = :lose
     end
     check
   end
